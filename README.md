@@ -2,13 +2,14 @@
 > Simple application implementing Shopping Cart
 
 ### Table of contents
-[General info](#general-info)
-[Technologies](#technologies)
-[Status](#status)
-[Contact](#contact)
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Status](#status)
+* [Contact](#contact)
 
 ### General info
 This project was created to practice programming with java, spring hibernate and postgresql database before doing interview task.
+Due to stress I think I won't pass interview task, but I decided to finish this project anyway.
 
 ### Technologies
 * Java 11
