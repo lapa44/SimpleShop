@@ -9,6 +9,8 @@ import com.SimpleShop.domain.model.Delivery;
 import com.SimpleShop.domain.model.GiftCard;
 import com.SimpleShop.domain.model.Item;
 import com.SimpleShop.domain.model.ShoppingCart;
+import com.SimpleShop.util.DataGenerator;
+import com.SimpleShop.util.DatabaseException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,21 +23,10 @@ public abstract class DatabaseTest {
   void shouldSaveShoppingCart() {
     Database database = getDatabase();
 
-    ShoppingCart shoppingCart = ShoppingCart.builder()
-        .client(Client.builder()
-            .name("Jan")
-            .address("Polska")
-            .build())
-        .products(Collections.singletonList(
-            Item.builder()
-                .name("piwo")
-                .description("dobre")
-                .price(new BigDecimal("10.3"))
-                .quantity(10)
-                .build()))
-        .build();
+    ShoppingCart shoppingCart = DataGenerator.randomShoppingCart().build();
 
     ShoppingCart savedShoppingCart = database.saveShoppingCart(shoppingCart);
+
     assertNotNull(savedShoppingCart);
     assertEquals(shoppingCart, savedShoppingCart);
     assertEquals(1, database.getShoppingCarts().size());
@@ -45,18 +36,7 @@ public abstract class DatabaseTest {
   void shouldGetShoppingCartById() throws DatabaseException {
     Database database = getDatabase();
 
-    ShoppingCart shoppingCart = database.saveShoppingCart(ShoppingCart.builder()
-        .client(Client.builder()
-            .name("Jan")
-            .address("Polska")
-            .build())
-        .products(Collections.singletonList(
-            Item.builder()
-                .name("piwo")
-                .description("dobre")
-                .price(new BigDecimal("10.3"))
-                .quantity(10)
-                .build()))
+    ShoppingCart shoppingCart = database.saveShoppingCart(DataGenerator.randomShoppingCart()
         .build());
 
     assertEquals(1, database.getShoppingCarts().size());
@@ -67,33 +47,9 @@ public abstract class DatabaseTest {
   void shouldGetShoppingCarts() {
     Database database = getDatabase();
 
-    ShoppingCart shoppingCart1 = ShoppingCart.builder()
-        .client(Client.builder()
-            .name("Jan")
-            .address("Polska")
-            .build())
-        .products(Collections.singletonList(
-            Item.builder()
-                .name("piwo")
-                .description("dobre")
-                .price(new BigDecimal("10.3"))
-                .quantity(10)
-                .build()))
-        .build();
+    ShoppingCart shoppingCart1 = DataGenerator.randomShoppingCart().build();
 
-    ShoppingCart shoppingCart2 = ShoppingCart.builder()
-        .client(Client.builder()
-            .name("Kazimierz")
-            .address("USA")
-            .build())
-        .products(Collections.singletonList(
-            Item.builder()
-                .name("Cola")
-                .description("Pyszna")
-                .price(new BigDecimal("2.0"))
-                .quantity(10)
-                .build()))
-        .build();
+    ShoppingCart shoppingCart2 = DataGenerator.randomShoppingCart().build();
 
     database.saveShoppingCart(shoppingCart1);
     database.saveShoppingCart(shoppingCart2);
@@ -106,19 +62,7 @@ public abstract class DatabaseTest {
   void shouldRemoveShoppingCartById() throws DatabaseException {
     Database database = getDatabase();
 
-    ShoppingCart shoppingCart = ShoppingCart.builder()
-        .client(Client.builder()
-            .name("Jan")
-            .address("Polska")
-            .build())
-        .products(Collections.singletonList(
-            Item.builder()
-                .name("piwo")
-                .description("dobre")
-                .price(new BigDecimal("10.3"))
-                .quantity(10)
-                .build()))
-        .build();
+    ShoppingCart shoppingCart = DataGenerator.randomShoppingCart().build();
 
     ShoppingCart savedShoppingCart = database.saveShoppingCart(shoppingCart);
     database.removeShoppingCartById(savedShoppingCart.getId());
@@ -132,19 +76,19 @@ public abstract class DatabaseTest {
 
     ShoppingCart shoppingCart = ShoppingCart.builder()
         .client(Client.builder()
-            .name("Jan")
-            .address("Polska")
+            .name("John")
+            .address("England")
             .build())
         .products(Collections.singletonList(
             Item.builder()
-                .name("piwo")
-                .description("dobre")
+                .name("Beer")
+                .description("Tasty")
                 .price(new BigDecimal("10.3"))
                 .quantity(10)
                 .build()))
         .build();
     shoppingCart.addDelivery(Delivery.builder()
-        .name("Kurier")
+        .name("Courier")
         .price(BigDecimal.TEN)
         .estimatedShippingTime(Duration.ofDays(1))
         .build());
@@ -163,13 +107,13 @@ public abstract class DatabaseTest {
     ShoppingCart savedShoppingCart = database.saveShoppingCart(
         ShoppingCart.builder()
             .client(Client.builder()
-                .name("Jan")
-                .address("Polska")
+                .name("John")
+                .address("England")
                 .build())
             .products(Collections.singletonList(
                 Item.builder()
-                    .name("piwo")
-                    .description("dobre")
+                    .name("Beer")
+                    .description("Tasty")
                     .price(new BigDecimal("10.3"))
                     .quantity(10)
                     .build()))
@@ -194,20 +138,20 @@ public abstract class DatabaseTest {
     ShoppingCart savedShoppingCart = database.saveShoppingCart(
         ShoppingCart.builder()
             .client(Client.builder()
-                .name("Jan")
-                .address("Polska")
+                .name("John")
+                .address("Poland")
                 .build())
             .products(Collections.singletonList(
                 Item.builder()
-                    .name("piwo")
-                    .description("dobre")
+                    .name("Beer")
+                    .description("Good")
                     .price(new BigDecimal("10.3"))
                     .quantity(10)
                     .build()))
             .build());
 
     savedShoppingCart.addDelivery(Delivery.builder()
-        .name("Kurier")
+        .name("Courier")
         .price(BigDecimal.TEN)
         .estimatedShippingTime(Duration.ofDays(1))
         .build());

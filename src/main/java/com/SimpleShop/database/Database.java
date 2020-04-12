@@ -2,6 +2,7 @@ package com.SimpleShop.database;
 
 import java.util.List;
 import com.SimpleShop.domain.model.ShoppingCart;
+import com.SimpleShop.util.DatabaseException;
 
 public interface Database {
 
