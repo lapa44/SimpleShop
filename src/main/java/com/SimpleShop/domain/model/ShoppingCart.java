@@ -1,6 +1,7 @@
 package com.SimpleShop.domain.model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Getter
 @ToString
@@ -26,6 +28,7 @@ public class ShoppingCart {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(unique = true)
   private Long id;
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @NotNull
@@ -35,6 +38,21 @@ public class ShoppingCart {
   @NotNull
   private List<Item> products;
   private BigDecimal totalPrice;
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Delivery delivery;
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private GiftCard giftCard;
+
+  public ShoppingCart(Client client, List<Item> products, Delivery delivery, GiftCard giftCard) {
+    this.client = client;
+    this.products = products;
+    this.delivery = delivery;
+    this.giftCard = giftCard;
+    this.totalPrice = products.stream()
+        .map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
+        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        .subtract(delivery.getPrice()).subtract(giftCard.getValue());
+  }
 
   @Builder
   public ShoppingCart(Client client, List<Item> products) {
@@ -45,6 +63,7 @@ public class ShoppingCart {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
+  @Tolerate
   public ShoppingCart() {
     products = new ArrayList<>();
     totalPrice = new BigDecimal(BigInteger.ZERO);
@@ -63,7 +82,9 @@ public class ShoppingCart {
         && Objects.equals(client, that.client)
         && products.size() == that.products.size()
         && products.containsAll(that.products)
-        && totalPrice.compareTo(that.totalPrice) == 0;
+        && totalPrice.compareTo(that.totalPrice) == 0
+        && Objects.equals(delivery, that.delivery)
+        && Objects.equals(giftCard, that.giftCard);
   }
 
   @Override
@@ -71,9 +92,19 @@ public class ShoppingCart {
     return Objects.hash(id, client, products, totalPrice);
   }
 
-  public ShoppingCart addToCart(Item item) {
-    products.add(item);
-    totalPrice = totalPrice.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
-    return this;
+  public void addToCart(Item item) {
+    this.products.add(item);
+    this.totalPrice = this.totalPrice.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
   }
+
+  public void addDelivery(Delivery delivery) {
+    this.delivery = delivery;
+    this.totalPrice = this.totalPrice.add(delivery.getPrice());
+  }
+
+  public void addGiftCard(GiftCard giftCard) {
+    this.giftCard = giftCard;
+    this.totalPrice = this.totalPrice.subtract(giftCard.getValue());
+  }
+
 }
