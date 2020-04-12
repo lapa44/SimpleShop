@@ -1,8 +1,8 @@
-package com.SimpleShop.database;
+package com.SimpleShop.util;
 
 public class DatabaseException extends Exception {
 
-  DatabaseException(Throwable cause) {
+  public DatabaseException(Throwable cause) {
     super(cause);
   }
 }

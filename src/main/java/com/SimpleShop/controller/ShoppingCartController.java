@@ -3,7 +3,7 @@ package com.SimpleShop.controller;
 import javax.validation.Valid;
 import java.util.List;
 import com.SimpleShop.database.Database;
-import com.SimpleShop.database.DatabaseException;
+import com.SimpleShop.util.DatabaseException;
 import com.SimpleShop.domain.model.ShoppingCart;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
